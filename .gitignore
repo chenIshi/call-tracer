@@ -1,0 +1,9 @@
+CMakeCache.txt
+CMakeFiles/
+Makefile
+MyFunctionPass/CMakeFiles/
+MyFunctionPass/Makefile
+MyFunctionPass/cmake_install.cmake
+MyFunctionPass/libMyFunctionPass.so
+cmake_install.cmake
+test.ll
