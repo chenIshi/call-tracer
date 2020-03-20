@@ -39,16 +39,11 @@ namespace {
 		std::list<Function*> valueList;
 	private:
 		Function* mMain; //主函数
-		
-
 		unsigned int edge_count = 0;
-
-
 	};
 
 
-	class CGPass : public ModulePass
-	{
+	class CGPass : public ModulePass {
 	public:
 		static char ID;
 		CGPass() : ModulePass(ID){}
@@ -56,8 +51,6 @@ namespace {
 		
 	private:
 		CallGraph *G;
-		
-
 	};
 	char CGPass::ID = 0;
 }

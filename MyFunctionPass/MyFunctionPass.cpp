@@ -1,10 +1,7 @@
 
 #include "MyFunctionPass.h"
-
 #include <iostream>
-
 #include <fstream>
-
 #include <deque>
 
 
@@ -21,28 +18,21 @@ void CallGraph::printNode(std::string dotString) const {
 void CallGraph::dump() const {
 
 	std::error_code error;
-	// enum sys::fs::OpenFlags F_None;
-	// StringRef fileName("CG.dot");
-	// raw_fd_ostream file(fileName, error, F_None);
 
-	std::string dotString = "";
-
+/*
 	outs() << "digraph \"Call Graph\"{\n";
 	outs() << "label=\"Call Graph\";\n";
 
 	for (Function* f : valueList) {
 		outs() << "Node" << f << " [shape=record, label=\"{"  << f->getName() << "}\"];\n";
 	}
+*/
 
 	for (auto pairs : m_map) {
 		for (Function* second : pairs.second) {
-			outs() << "Node" << pairs.first << " -> " << "Node" << second << ";\n";
+			outs() << "Function " << pairs.first->getName() << " -> " << "Function " << second->getName() << ";\n";
 		}
-
 	}
-
-	// file <<  "}\n";
-	// file.close();
 
 }
 
@@ -62,85 +52,40 @@ bool CGPass::runOnModule(Module &M) {
 	list.push_back(main);
 
 	while (!list.empty()) {
-
 		Function* func = list.front();
-
 		list.pop_front();
 
-		for (Function::iterator iter = func->begin(); iter != func->end(); ++iter)
-
-		{
-
-
-
-			for (BasicBlock::iterator Biter = iter->begin(); Biter != iter->end(); ++Biter)
-
-			{
-
+		for (Function::iterator iter = func->begin(); iter != func->end(); ++iter) {
+			for (BasicBlock::iterator Biter = iter->begin(); Biter != iter->end(); ++Biter)	{
 				Instruction *I = &*Biter;
-
-				if (CallInst *inst = dyn_cast<CallInst>(I))
-
-				{
-
-					//errs() <<"instruction\n";
-
+				if (CallInst *inst = dyn_cast<CallInst>(I))	{
 					Function* called = inst->getCalledFunction();
 
-					if (called)
-
-					{
-
-						//errs() <<"instruction1\n";
-						//errs() <<"instruction2\n";
-
+					if (called)	{
 						G->AddEdge(func, called);
-
-						if (!G->hasFunction(called))
-
-						{
+						if (!G->hasFunction(called)) {
 							list.push_back(called);
 							G->valueList.push_back(called);
 						}
-
-						//}
-
 					}
-
 				}
 
-				if (InvokeInst *inst = dyn_cast<InvokeInst>(I))
-
-				{
-
+				if (InvokeInst *inst = dyn_cast<InvokeInst>(I))	{
 					Function* called = inst->getCalledFunction();
-
 					errs() << "hello\n";
 
-					if (called)
-
-					{
-
+					if (called)	{
 						G->AddEdge(func, called);
-
-						if (!G->hasFunction(called))
-
-						{
+						if (!G->hasFunction(called)) {
 							list.push_back(called);
 							G->valueList.push_back(called);
 						}
-
 					}
-
 				}
-
 			}
-
 		}
-
 	}
 
-	//G->print();
 	G->dump();
 
 }
