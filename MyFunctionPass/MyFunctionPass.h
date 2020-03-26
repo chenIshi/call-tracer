@@ -15,6 +15,7 @@
 using namespace llvm;
 
 namespace {
+	/* Call graph is a class using a C++ pair to keep the relationship of function callee and caller */
 	class CallGraph {
 	public:
 		CallGraph(Function *mainFunc) : mMain(mainFunc) {}
@@ -23,22 +24,21 @@ namespace {
 			m_map[f].insert(t);
 		}
 
-		//打印CallGraph及其信息
 		void print() const;
 
-		//将Callgraph输出到dot图中
 		void dump() const;
+		/* check if input function is in mapping */
 		bool hasFunction(Function *func) {
 			std::map<Function*, std::set<Function*> >::iterator iter = m_map.find(func);
 			if (iter == m_map.end())
 				return false;
 			return true;
 		}
+		/* C++ pair, with first being target function, and second being its following calling functions */
 		std::map<Function*, std::set<Function*> > m_map;
-		void printNode(std::string dotString) const;
-		std::list<Function*> valueList;
+		// std::list<Function*> valueList;
 	private:
-		Function* mMain; //主函数
+		Function* mMain;
 		unsigned int edge_count = 0;
 	};
 
@@ -47,6 +47,7 @@ namespace {
 	public:
 		static char ID;
 		CGPass() : ModulePass(ID){}
+		/* according to the [document](http://llvm.org/docs/WritingAnLLVMPass.html#the-runonmodule-method), class which inherit ModulePass should implement runOnModule */
 		virtual bool runOnModule(Module &M) override;
 		
 	private:
